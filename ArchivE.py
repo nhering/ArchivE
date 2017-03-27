@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 import shutil
 import os
 from os import listdir
@@ -11,9 +12,8 @@ archiveTime = time.time() - 86400
 
 mod_or_create = ""
 instructions = "Step 1: Select the source directory\nStep 2: Select the destination directory\nStep 3: Select desired option for archiving\nStep 4: Press the 'Archive Now' button to perfom the archive"
-srcdir = ""
+srcdir = "Please select a source folder."
 dstdir = ""
-results = "Please select source"
 
 class Archive:
     def __init__(self, master):
@@ -52,47 +52,44 @@ class Archive:
             global dstdir
             dstdir = filedialog.askdirectory(initialdir="/", title="Select destination directory.")
             self.dst_label.config(text=dstdir)
+            validate_paths(self)
 
         def validate_paths(self):
             if (srcdir == ""):
-                self.src_label.config(text="Please select source directory.")
-            if (srcdir != ""):
-                self.dst_btn.grid(pady=5, row=1, column=0)
-                self.dst_label.grid(padx=5, sticky=W, row=1, column=1, columnspan=2)
-
-
-            if (srcdir == "" and dstdir == ""):
-                self.results.config(text="Please select source")
-            elif (srcdir == "" and dstdir != ""):
-                self.results.config(text="That's a nice destination folder. Now please select source")
-            elif (srcdir != "" and dstdir == ""):
-                self.results.config(text = "Please select destination")
-            elif (srcdir == dstdir):
-                self.results.config(text="Source and destination may not be the same.")
+                if (dstdir == ""):
+                    self.src_label.config(text="Please select a source folder.")
+                    self.dst_label.config(text="")
+                else:
+                    self.src_label.config(text="Please select a source folder.")
             else:
-                self.results.config(text="")
+                self.dst_btn.grid(pady=5, row=1, column=0)
+                self.dst_label.grid(padx=5, pady=5, sticky=W, row=1, column=1, columnspan=2)
+                if (dstdir == ""):
+                    self.dst_label.config(text="Please select a destination folder.")
+                elif (srcdir == dstdir):
+                    messagebox.showinfo("Archive: Path error",
+                                        "You may not select the same folder for both the source and destination.")
+                else:
+                    options.grid(padx=5, pady=5, sticky=W, row=2, column=0)
 
 
         #Options--------------------------------------------------------------------------------------------------------
         options=ttk.Frame(master, width=600)
-        options.grid(padx=5, pady=15, sticky=W, row=2, column=0)
 
-        self.options_text=ttk.Label(options, text="Select desired option.")
+        self.options_text=ttk.Label(options, text="Select archive option.")
         self.options_text.grid(pady=5, sticky=W, row=0, column=0, columnspan=3)
 
-        self.mod_create_opt1=ttk.Radiobutton(options, text = "Archive only files that have been modified in the past 24 hours.", variable=mod_or_create, value="m")
+        self.mod_create_opt1=ttk.Radiobutton(options, text = "Only files that have been modified in the past 24 hours.", variable=mod_or_create, value="m")
         self.mod_create_opt1.grid(padx=2, pady=1, sticky=W, row=1, column=0)
 
-        self.mod_create_opt2=ttk.Radiobutton(options, text = "Archive only files that have been created in the past 24 hours.", variable=mod_or_create, value="c")
+        self.mod_create_opt2=ttk.Radiobutton(options, text = "Only files that have been created in the past 24 hours.", variable=mod_or_create, value="c")
         self.mod_create_opt2.grid(padx=2, pady=1, sticky=W, row=2, column=0)
 
-        self.mod_create_opt3=ttk.Radiobutton(options, text = "Archive files that have been either modified or created in the past 24 hours.", variable=mod_or_create, value="mc")
+        self.mod_create_opt3=ttk.Radiobutton(options, text = "Files that have been either modified or created in the past 24 hours.", variable=mod_or_create, value="mc")
         self.mod_create_opt3.grid(padx=2, pady=1, sticky=W, row=3, column=0)
 
 
         #Feedback-------------------------------------------------------------------------------------------------------
-        self.results=ttk.Label(master, justify=LEFT, text=results)
-        self.results.grid(padx=5, pady=5, sticky=W, row=4, column=0, columnspan=2)
 
 
 
