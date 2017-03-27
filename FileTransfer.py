@@ -13,29 +13,7 @@ dstdir = ""
 # Currently set to 24 hours ago. This can be used later to accept a user defined time for validating if a file should be archived or not.
 archiveTime = time.time() - 86400
 
-# checks the source and destination paths given to ensure they are valid and not equal to each other
-def validate_path(path):
-    if (srcdir == dstdir):
-        print("Source and destination are the same. Exiting")
-        exit()
-    else:
-        if (os.path.exists(path)):
-            return ("Valid path:  ")
-        else:
-            return ("invalid path. Exiting")
-            exit()
-
-# prompt for source path
-#srcdir = input("Enter the path of the source folder: ")
-#validate_path(srcdir)
-#print(validate_path(srcdir) + srcdir)
-
-# prompt for destination path
-dstdir = input("Enter the path of the destination folder: ")
-validate_path(dstdir)
-print(validate_path(dstdir) + dstdir)
-
-# prompt for create or modified date as the criteria for coping the file
+# prompt for create and/or modified date as the criteria for coping the file
 criteria = ""
 while (criteria != "c") and (criteria != "m"):
     criteria = input(
